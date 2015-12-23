@@ -35,6 +35,14 @@ module PostgREST
       end
     end
 
+    def restart_postgrest
+      Process.kill('TERM', pid) if pid
+
+      unless setup_postgrest && wait_for_server
+        fail PostgRESTServerStartError, 'Unable to restart PostgREST server'
+      end
+    end
+
     private
 
     def setup_database
