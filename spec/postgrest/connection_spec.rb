@@ -55,11 +55,22 @@ RSpec.describe PostgREST::Connection do
       end
 
       context 'table contains records' do
-        before(:each) { execute_sql("INSERT INTO foobar1 values (1), (5)") }
+        before(:each) { execute_sql("INSERT INTO foobar1 values (1), (5), (1)") }
         after(:each) { execute_sql("DELETE FROM foobar1") }
 
         it 'should return an array of records' do
-          is_expected.to contain_exactly({ 'num' => 1 }, { 'num' => 5 })
+          is_expected.to contain_exactly({ 'num' => 1 },
+            { 'num' => 5 }, { 'num' => 1 })
+        end
+
+        it 'should allow filtering of records' do
+          expect(connection.table(table_name, { num: 'eq.1' }))
+            .to contain_exactly({ 'num' => 1 }, { 'num' => 1 })
+        end
+
+        it 'should allow specifying orders' do
+          expect(connection.table(table_name, { order: 'num.desc'}))
+            .to eq([{ 'num' => 5 }, { 'num' => 1 }, { 'num' => 1 }])
         end
       end
     end
