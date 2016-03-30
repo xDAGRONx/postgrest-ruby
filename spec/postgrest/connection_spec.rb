@@ -32,4 +32,44 @@ RSpec.describe PostgREST::Connection do
       end
     end
   end
+
+  describe '#table' do
+    let(:table_name) { 'foobar1' }
+    subject { connection.table(table_name) }
+
+    context 'table exists' do
+      before(:all) do
+        execute_sql("CREATE TABLE foobar1 (num integer)")
+        restart_postgrest
+      end
+
+      after(:all) do
+        execute_sql("DROP TABLE foobar1")
+        restart_postgrest
+      end
+
+      context 'table is empty' do
+        it 'should return an empty array' do
+          is_expected.to eq([])
+        end
+      end
+
+      context 'table contains records' do
+        before(:each) { execute_sql("INSERT INTO foobar1 values (1), (5)") }
+        after(:each) { execute_sql("DELETE FROM foobar1") }
+
+        it 'should return an array of records' do
+          is_expected.to contain_exactly({ 'num' => 1 }, { 'num' => 5 })
+        end
+      end
+    end
+
+    context 'table does not exist' do
+      it 'should return the parsed PostgREST error hash' do
+        is_expected.to be_a(Hash)
+        expect(subject['message'])
+          .to eq(%(relation "public.#{table_name}" does not exist))
+      end
+    end
+  end
 end

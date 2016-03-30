@@ -9,5 +9,9 @@ module PostgREST
     def tables
       HTTParty.get(url).parsed_response
     end
+
+    def table(table_name)
+      HTTParty.get("#{url}/#{table_name}").parsed_response
+    end
   end
 end
