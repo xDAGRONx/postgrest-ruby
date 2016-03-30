@@ -10,8 +10,9 @@ module PostgREST
       HTTParty.get(url).parsed_response
     end
 
-    def table(table_name, query = {})
-      HTTParty.get("#{url}/#{table_name}", query: query).parsed_response
+    def table(table_name, query = {}, headers = {})
+      HTTParty.get("#{url}/#{table_name}", query: query, headers: headers)
+        .parsed_response
     end
   end
 end

@@ -72,6 +72,14 @@ RSpec.describe PostgREST::Connection do
           expect(connection.table(table_name, { order: 'num.desc'}))
             .to eq([{ 'num' => 5 }, { 'num' => 1 }, { 'num' => 1 }])
         end
+
+        it 'should allow specifying request headers' do
+          expect(connection.table(table_name, { num: 'eq.5' },
+            { 'Prefer' => 'plurality=singular' }))
+            .to eq({ 'num' => 5 })
+          expect(connection.table(table_name, {}, { 'Range' => '1-2' }))
+            .to eq([{ 'num' => 5 }, { 'num' => 1}])
+        end
       end
     end
 
