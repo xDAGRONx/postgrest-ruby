@@ -14,5 +14,9 @@ module PostgREST
       HTTParty.get("#{url}/#{table_name}", query: query, headers: headers)
         .parsed_response
     end
+
+    def describe(table_name)
+      HTTParty.options("#{url}/#{table_name}").parsed_response
+    end
   end
 end

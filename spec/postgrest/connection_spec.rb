@@ -91,4 +91,34 @@ RSpec.describe PostgREST::Connection do
       end
     end
   end
+
+  describe '#describe' do
+    let(:table_name) { 'foobar1' }
+    subject { connection.describe(table_name) }
+
+    context 'table exists' do
+      before(:all) do
+        execute_sql("CREATE TABLE foobar1 (num integer)")
+        restart_postgrest
+      end
+
+      after(:all) do
+        execute_sql("DROP TABLE foobar1")
+        restart_postgrest
+      end
+
+      it 'should return a hash describing the table' do
+        is_expected.to eq({ "pkey" => [], "columns" => [
+          { "references" => nil, "default" => nil, "precision" => 32,
+            "updatable" => true, "schema" => "public", "name" => "num",
+            "type" => "integer", "maxLen" => nil, "enum" => [],
+            "nullable" => true, "position" => 1 }
+          ] })
+      end
+    end
+
+    context 'table does not exist' do
+      it { is_expected.to be_nil }
+    end
+  end
 end
