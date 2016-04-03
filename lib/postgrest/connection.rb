@@ -6,6 +6,10 @@ module PostgREST
       @url = url
     end
 
+    def [](table_name)
+      Dataset.new(self, table_name)
+    end
+
     def tables
       HTTParty.get(url).parsed_response
     end
