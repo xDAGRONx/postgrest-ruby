@@ -28,4 +28,12 @@ RSpec.describe PostgREST::Dataset do
       is_expected.to eq([{ 'num' => 5 }, { 'num' => 2 }])
     end
   end
+
+  describe '#first' do
+    subject { dataset.first }
+
+    it 'should return the first matching record' do
+      is_expected.to eq({ 'num' => 5 })
+    end
+  end
 end

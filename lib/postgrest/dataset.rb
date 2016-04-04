@@ -15,6 +15,11 @@ module PostgREST
       fetch_rows.each(&block)
     end
 
+    def first
+      connection.table(table, query, headers
+        .merge('Prefer' => 'plurality=singular'))
+    end
+
     private
 
     def fetch_rows
