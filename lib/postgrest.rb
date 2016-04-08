@@ -4,6 +4,7 @@ require "postgrest/version"
 require "postgrest/connection"
 require "postgrest/query"
 require "postgrest/query/order_clause"
+require "postgrest/query/where_clause"
 require "postgrest/dataset"
 require "postgrest/base"
 
