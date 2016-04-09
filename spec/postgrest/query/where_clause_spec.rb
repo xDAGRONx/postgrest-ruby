@@ -64,5 +64,14 @@ RSpec.describe PostgREST::Query::WhereClause do
           d: ['like.hi*'], e: ['gte.6', 'lte.12'], f: ['in.6,7,8'])
       end
     end
+
+    context 'query is for exclusions' do
+      let(:clause) { described_class.new(query, true) }
+
+      it 'should encode each param with a "not"' do
+        is_expected.to eq(a: ['not.eq.1'], b: ['not.is.null'], c: ['not.is.true'],
+          d: ['not.like.hi*'], e: ['not.gte.6', 'not.lte.12'], f: ['not.in.6,7,8'])
+      end
+    end
   end
 end

@@ -4,8 +4,9 @@ module PostgREST
       attr_reader :query
       alias encode query
 
-      def initialize(query)
+      def initialize(query, exclude = false)
         @query = process_query(query)
+        @query.each { |key, value| value.map! { |q| "not.#{q}" } } if exclude
       end
 
       private
