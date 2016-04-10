@@ -26,4 +26,24 @@ RSpec.describe PostgREST::Query do
       expect(result.encode).to eq('a=2&order=b%2Cc.desc')
     end
   end
+
+  describe '#filter' do
+    let(:query) { described_class.new(a: 2) }
+    subject { query.filter(b: [1,2,3], a: (1..4)) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should add the given filters to the query' do
+      expect(subject.encode).to eq('a=2&a=gte.1&a=lte.4&b=in.1%2C2%2C3')
+    end
+
+    it 'should allow chaining to narrow filter' do
+      result = subject.filter(c: nil)
+      expect(result.encode)
+        .to eq('a=2&a=gte.1&a=lte.4&b=in.1%2C2%2C3&c=is.null')
+    end
+  end
 end

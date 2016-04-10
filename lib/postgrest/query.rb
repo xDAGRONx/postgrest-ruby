@@ -14,6 +14,10 @@ module PostgREST
       branch(order: OrderClause.new(args)) { |_, x, y| x.join(y) }
     end
 
+    def filter(args)
+      branch(WhereClause.new(args).query) { |_, x, y| [*x] | [*y] }
+    end
+
     private
 
     def branch(new_query, &block)
