@@ -46,4 +46,25 @@ RSpec.describe PostgREST::Query do
         .to eq('a=2&a=gte.1&a=lte.4&b=in.1%2C2%2C3&c=is.null')
     end
   end
+
+  describe '#exclude' do
+    let(:query) { described_class.new(a: 2) }
+    subject { query.exclude(b: [1,2,3], a: (1..4)) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should add the given excludes to the query' do
+      expect(subject.encode)
+        .to eq('a=2&a=not.gte.1&a=not.lte.4&b=not.in.1%2C2%2C3')
+    end
+
+    it 'should allow chaining to narrow exclude' do
+      result = subject.exclude(c: nil)
+      expect(result.encode)
+        .to eq('a=2&a=not.gte.1&a=not.lte.4&b=not.in.1%2C2%2C3&c=not.is.null')
+    end
+  end
 end

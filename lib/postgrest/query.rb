@@ -18,6 +18,10 @@ module PostgREST
       branch(WhereClause.new(args).query) { |_, x, y| [*x] | [*y] }
     end
 
+    def exclude(args)
+      branch(WhereClause.new(args, true).query) { |_, x, y| [*x] | [*y] }
+    end
+
     private
 
     def branch(new_query, &block)
