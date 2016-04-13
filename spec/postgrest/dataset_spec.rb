@@ -106,6 +106,18 @@ RSpec.describe PostgREST::Dataset do
       is_expected.to contain_exactly({ 'num' => 2 })
     end
   end
+
+  describe '#exclude' do
+    subject { dataset.exclude(num: 2) }
+
+    it 'should return a new dataset with the given exclusions added' do
+      execute_sql('INSERT INTO foo values (1), (5), (2)')
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(dataset)
+      expect(subject.query.encode).to eq('num=gte.2&num=not.eq.2')
+      is_expected.to contain_exactly({ 'num' => 5 })
+    end
+  end
 end
 
 def result_nums(result)

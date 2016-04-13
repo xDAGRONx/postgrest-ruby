@@ -27,6 +27,10 @@ module PostgREST
       branch(query: query.filter(args))
     end
 
+    def exclude(args = {})
+      branch(query: query.exclude(args))
+    end
+
     private
 
     def fetch_rows(args = {})
