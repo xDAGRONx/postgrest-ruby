@@ -19,6 +19,10 @@ module PostgREST
       fetch_rows(headers: headers.merge('Prefer' => 'plurality=singular'))
     end
 
+    def [](args)
+      where(args).first
+    end
+
     def order(*args)
       branch(query: query.append_order(*args))
     end

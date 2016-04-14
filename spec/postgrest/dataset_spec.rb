@@ -40,6 +40,16 @@ RSpec.describe PostgREST::Dataset do
     end
   end
 
+  describe '#[]' do
+    let(:search) { { num: { lte: 5 } } }
+    subject { dataset[search] }
+
+    it 'should return the first record for the given query' do
+      execute_sql('INSERT INTO foo values (1), (5), (2)')
+      is_expected.to eq({ 'num' => 5 })
+    end
+  end
+
   describe '#order' do
     before(:each) do
       execute_sql('INSERT INTO foo values (1), (5), (2), (NULL), (6)')
