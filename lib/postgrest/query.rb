@@ -22,6 +22,10 @@ module PostgREST
       branch(WhereClause.new(args, true).query) { |_, x, y| [*x] | [*y] }
     end
 
+    def select(columns)
+      branch(select: columns.join(','))
+    end
+
     private
 
     def branch(new_query, &block)

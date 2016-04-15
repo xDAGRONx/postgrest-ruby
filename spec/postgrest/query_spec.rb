@@ -67,4 +67,23 @@ RSpec.describe PostgREST::Query do
         .to eq('a=2&a=not.gte.1&a=not.lte.4&b=not.in.1%2C2%2C3&c=not.is.null')
     end
   end
+
+  describe '#select' do
+    let(:query) { described_class.new(a: 'eq.2') }
+    subject { query.select([:a, :c]) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should add the given select clause to the query' do
+      expect(subject.encode).to eq('a=eq.2&select=a%2Cc')
+    end
+
+    it 'should override previous selections when chained' do
+      result = subject.select([:c, :d])
+      expect(result.encode).to eq('a=eq.2&select=c%2Cd')
+    end
+  end
 end
