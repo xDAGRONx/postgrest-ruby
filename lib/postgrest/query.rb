@@ -26,6 +26,10 @@ module PostgREST
       branch(select: columns.join(','))
     end
 
+    def append_select(columns)
+      branch(select: columns.join(',')) { |_, x, y| [x, y].join(',') }
+    end
+
     private
 
     def branch(new_query, &block)

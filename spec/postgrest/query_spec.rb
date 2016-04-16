@@ -86,4 +86,23 @@ RSpec.describe PostgREST::Query do
       expect(result.encode).to eq('a=eq.2&select=c%2Cd')
     end
   end
+
+  describe '#append_select' do
+    let(:query) { described_class.new(a: 'eq.2') }
+    subject { query.append_select([:a, :c]) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should add the given select clause to the query' do
+      expect(subject.encode).to eq('a=eq.2&select=a%2Cc')
+    end
+
+    it 'should append to previous selections when chained' do
+      result = subject.append_select([:c, :d])
+      expect(result.encode).to eq('a=eq.2&select=a%2Cc%2Cc%2Cd')
+    end
+  end
 end
