@@ -35,6 +35,10 @@ module PostgREST
       branch(query: query.exclude(args))
     end
 
+    def select(*columns)
+      branch(query: query.select(columns.flatten))
+    end
+
     private
 
     def fetch_rows(args = {})

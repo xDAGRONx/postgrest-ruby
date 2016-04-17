@@ -128,6 +128,32 @@ RSpec.describe PostgREST::Dataset do
       is_expected.to contain_exactly({ 'num' => 5 })
     end
   end
+
+  describe '#select' do
+    before(:all) do
+      execute_sql('CREATE TABLE foo1 (num1 integer, num2 integer)')
+      restart_postgrest
+      execute_sql('INSERT INTO foo1 values (1,1), (1, 2), (3, 2), (0, 0)')
+    end
+
+    after(:all) do
+      execute_sql('DROP TABLE foo1')
+      restart_postgrest
+    end
+
+    let(:table_name) { 'foo1' }
+    let(:query) { PostgREST::Query.new(num2: 'gte.2') }
+    subject { dataset.select(:num2) }
+
+    it 'should only return values for the given columns' do
+      is_expected.to contain_exactly({ 'num2' => 2 }, { 'num2' => 2 })
+    end
+
+    it 'should override previous selections when chained' do
+      expect(subject.select(:num1))
+        .to contain_exactly({ 'num1' => 1 }, { 'num1' => 3 })
+    end
+  end
 end
 
 def result_nums(result)
