@@ -39,6 +39,10 @@ module PostgREST
       branch(query: query.select(columns.flatten))
     end
 
+    def select_append(*columns)
+      branch(query: query.append_select(columns.flatten))
+    end
+
     private
 
     def fetch_rows(args = {})

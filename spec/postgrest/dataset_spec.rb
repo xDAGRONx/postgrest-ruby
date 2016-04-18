@@ -154,6 +154,33 @@ RSpec.describe PostgREST::Dataset do
         .to contain_exactly({ 'num1' => 1 }, { 'num1' => 3 })
     end
   end
+
+  describe '#select_append' do
+    before(:all) do
+      execute_sql('CREATE TABLE foo1 (num1 integer, num2 integer, num3 integer)')
+      restart_postgrest
+      execute_sql('INSERT INTO foo1 values (1, 1, 2), (1, 2, 4), (3, 2, 1), (0, 0, 0)')
+    end
+
+    after(:all) do
+      execute_sql('DROP TABLE foo1')
+      restart_postgrest
+    end
+
+    let(:table_name) { 'foo1' }
+    let(:query) { PostgREST::Query.new(num2: 'gte.2') }
+    subject { dataset.select_append(:num2) }
+
+    it 'should only return values for the given columns' do
+      is_expected.to contain_exactly({ 'num2' => 2 }, { 'num2' => 2 })
+    end
+
+    it 'should append to previous selections when chained' do
+      expect(subject.select_append(:num3))
+        .to contain_exactly({ 'num2' => 2, 'num3' => 4 },
+          { 'num2' => 2, 'num3' => 1 })
+    end
+  end
 end
 
 def result_nums(result)
