@@ -10,6 +10,10 @@ module PostgREST
       URI.encode_www_form(encoded_params)
     end
 
+    def order(*args)
+      branch(order: OrderClause.new(args))
+    end
+
     def append_order(*args)
       branch(order: OrderClause.new(args)) { |_, x, y| x.join(y) }
     end

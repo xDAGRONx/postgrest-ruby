@@ -8,6 +8,25 @@ RSpec.describe PostgREST::Query do
     end
   end
 
+  describe '#order' do
+    let(:query) { described_class.new(a: 2) }
+    subject { query.order(:b) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should set the "order" param with the given order args' do
+      expect(subject.encode).to eq('a=2&order=b')
+    end
+
+    it 'should allow chaining to re-order' do
+      result = subject.order(c: :desc)
+      expect(result.encode).to eq('a=2&order=c.desc')
+    end
+  end
+
   describe '#append_order' do
     let(:query) { described_class.new(a: 2) }
     subject { query.append_order(:b) }
