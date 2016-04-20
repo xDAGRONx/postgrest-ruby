@@ -18,6 +18,10 @@ module PostgREST
       branch(order: OrderClause.new(args)) { |_, x, y| x.join(y) }
     end
 
+    def prepend_order(*args)
+      branch(order: OrderClause.new(args)) { |_, x, y| y.join(x) }
+    end
+
     def filter(args)
       branch(WhereClause.new(args).query) { |_, x, y| [*x] | [*y] }
     end

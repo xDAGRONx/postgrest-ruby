@@ -46,6 +46,25 @@ RSpec.describe PostgREST::Query do
     end
   end
 
+  describe '#prepend_order' do
+    let(:query) { described_class.new(a: 2) }
+    subject { query.prepend_order(:b) }
+
+    it 'should return a new query object' do
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(query)
+    end
+
+    it 'should prepend the given order args to the "order" param' do
+      expect(subject.encode).to eq('a=2&order=b')
+    end
+
+    it 'should allow chaining to prepend orders' do
+      result = subject.prepend_order(c: :desc)
+      expect(result.encode).to eq('a=2&order=c.desc%2Cb')
+    end
+  end
+
   describe '#filter' do
     let(:query) { described_class.new(a: 2) }
     subject { query.filter(b: [1,2,3], a: (1..4)) }
