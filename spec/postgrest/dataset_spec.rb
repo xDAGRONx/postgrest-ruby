@@ -98,9 +98,9 @@ RSpec.describe PostgREST::Dataset do
 
       let(:table_name) { 'foo1' }
 
-      it 'should append chained order clauses' do
+      it 'should override previous orders when chained' do
         result = dataset.order(:num2).order(num1: :desc)
-        expect(result_nums(result)).to eq([[0, 0], [1, 1], [3, 2], [1, 2]])
+        expect(result_nums(result)).to eq([[3, 2], [1, 1], [1, 2], [0, 0]])
       end
     end
   end

@@ -24,7 +24,7 @@ module PostgREST
     end
 
     def order(*args)
-      branch(query: query.append_order(*args))
+      branch(query: query.order(*args))
     end
 
     def where(args = {})
