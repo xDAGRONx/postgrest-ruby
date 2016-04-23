@@ -126,6 +126,27 @@ RSpec.describe PostgREST::Dataset do
     end
   end
 
+  describe '#order_prepend' do
+    before(:all) do
+      execute_sql('CREATE TABLE foo1 (num1 integer, num2 integer)')
+      restart_postgrest
+      execute_sql('INSERT INTO foo1 values (1,1), (1, 2), (3, 2), (0, 0)')
+    end
+
+    after(:all) do
+      execute_sql('DROP TABLE foo1')
+      restart_postgrest
+    end
+
+    let(:table_name) { 'foo1' }
+    let(:query) { PostgREST::Query.new }
+
+    it 'should prepend to previous orders when chained' do
+      result = dataset.order(:num2).order_prepend(num1: :desc)
+      expect(result_nums(result)).to eq([[3, 2], [1, 1], [1, 2], [0, 0]])
+    end
+  end
+
   describe '#where' do
     subject { dataset.where(num: 2) }
 
