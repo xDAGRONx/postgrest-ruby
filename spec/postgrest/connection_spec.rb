@@ -44,6 +44,17 @@ RSpec.describe PostgREST::Connection do
     end
   end
 
+  describe '#from' do
+    let(:table_name) { 'foo' }
+    subject { connection.from(table_name) }
+
+    it 'should return a dataset with the given table name, and self as the connection' do
+      is_expected.to be_a(PostgREST::Dataset)
+      expect(subject.table).to eq(table_name)
+      expect(subject.connection).to be(connection)
+    end
+  end
+
   describe '#table' do
     let(:table_name) { 'foobar1' }
     subject { connection.table(table_name) }

@@ -6,6 +6,10 @@ module PostgREST
       @url = url
     end
 
+    def from(table_name)
+      Dataset.new(self, table_name)
+    end
+
     def [](table_name)
       Dataset.new(self, table_name)
     end
