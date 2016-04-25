@@ -147,10 +147,22 @@ RSpec.describe PostgREST::Dataset do
     end
   end
 
+  describe '#filter' do
+    subject { dataset.filter(num: 2) }
+
+    it 'should return a new dataset with the given filter added' do
+      execute_sql('INSERT INTO foo values (1), (5), (2)')
+      is_expected.to be_a(described_class)
+      is_expected.not_to be(dataset)
+      expect(subject.query.encode).to eq('num=gte.2&num=eq.2')
+      is_expected.to contain_exactly({ 'num' => 2 })
+    end
+  end
+
   describe '#where' do
     subject { dataset.where(num: 2) }
 
-    it 'should return a new dataset with the given filter added' do
+    it 'should be an alias for filter' do
       execute_sql('INSERT INTO foo values (1), (5), (2)')
       is_expected.to be_a(described_class)
       is_expected.not_to be(dataset)

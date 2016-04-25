@@ -35,9 +35,11 @@ module PostgREST
       branch(query: query.prepend_order(*args))
     end
 
-    def where(args = {})
+    def filter(args = {})
       branch(query: query.filter(args))
     end
+
+    alias where filter
 
     def exclude(args = {})
       branch(query: query.exclude(args))
