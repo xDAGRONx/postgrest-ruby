@@ -31,6 +31,15 @@ RSpec.describe PostgREST::Dataset do
     end
   end
 
+  describe '#all' do
+    subject { dataset.all }
+
+    it 'should query the connection with the given parameters' do
+      execute_sql('INSERT INTO foo values (1), (5), (2)')
+      is_expected.to eq([{ 'num' => 5 }, { 'num' => 2 }])
+    end
+  end
+
   describe '#first' do
     subject { dataset.first }
 

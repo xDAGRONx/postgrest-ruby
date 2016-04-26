@@ -15,6 +15,8 @@ module PostgREST
       fetch_rows.each(&block)
     end
 
+    alias all to_a
+
     def first
       fetch_rows(headers: headers.merge('Prefer' => 'plurality=singular'))
     end
