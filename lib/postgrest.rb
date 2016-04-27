@@ -1,6 +1,7 @@
 require 'httparty'
 
 require "postgrest/version"
+require "postgrest/exceptions"
 require "postgrest/connection"
 require "postgrest/query"
 require "postgrest/query/order_clause"
