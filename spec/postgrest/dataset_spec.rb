@@ -59,6 +59,34 @@ RSpec.describe PostgREST::Dataset do
     end
   end
 
+  describe '#limit' do
+    before(:each) { execute_sql('INSERT INTO foo values (1), (5), (2), (3)') }
+
+    context 'invalid limit given' do
+      it 'should raise an error' do
+        expect { dataset.limit('hello') }.to raise_exception(PostgREST::Error,
+          'Limits must be greater than or equal to 1')
+      end
+    end
+
+    context 'valid limit given' do
+      it 'should return the first n results' do
+        expect(result_nums(dataset.limit(2))).to eq([5, 2])
+      end
+
+      it 'should override previous limits when chained' do
+        expect(result_nums(dataset.limit(5).limit(1))).to eq([5])
+        expect(result_nums(dataset.limit(1).limit(2))).to eq([5, 2])
+      end
+
+      context 'limit less than total dataset count' do
+        it 'should return all results' do
+          expect(result_nums(dataset.limit(5))).to eq([5, 2, 3])
+        end
+      end
+    end
+  end
+
   describe '#order' do
     before(:each) do
       execute_sql('INSERT INTO foo values (1), (5), (2), (NULL), (6)')

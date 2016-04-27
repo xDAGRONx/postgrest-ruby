@@ -25,6 +25,15 @@ module PostgREST
       where(args).first
     end
 
+    def limit(record_count)
+      if (n = record_count.to_i - 1) >= 0
+        branch(headers: headers.merge('Range-Unit' => 'items',
+          'Range' => "0-#{n}"))
+      else
+        raise Error, 'Limits must be greater than or equal to 1'
+      end
+    end
+
     def order(*args)
       branch(query: query.order(*args))
     end
